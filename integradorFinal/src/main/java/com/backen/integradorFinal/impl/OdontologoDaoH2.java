@@ -1,111 +1,94 @@
 package com.backen.integradorFinal.impl;
 
+import com.backen.integradorFinal.dao.Dao;
+import com.backen.integradorFinal.dao.H2Connection;
 import com.backen.integradorFinal.model.Odontologo;
 
 import org.slf4j.Logger;
 
 import java.sql.*;
-import java.util.ArrayList;
+
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
 
-public class OdontologoDaoH2 implements Dao<Odontologo>{
+public class OdontologoDaoH2 implements Dao<Odontologo> {
 
     private static final Logger LOGGER = getLogger(OdontologoDaoH2.class);
-    public static final String DRIVER = "org.h2.Driver";
-    public static final String DB_URL = "jdbc:h2:~/test;PASSWORD=;USER=sa;INIT=RUNSCRIPT FROM 'createDb.sql'";
-
-    private static void getDriver() {
-        try {
-            Class.forName(DRIVER);
-        } catch (ClassNotFoundException e) {
-            LOGGER.error(e);
-            throw new RuntimeException(e);
-        }
-    }
-
 
     @Override
     public Odontologo registrar(Odontologo odontologo) {
-        getDriver();
-
         Connection connection = null;
-        LOGGER.debug("La variable connection es: " + connection);
-
         try {
+            connection = H2Connection.getConnection();
+            connection.setAutoCommit(false);
 
-            connection = DriverManager.getConnection(DB_URL);
-            LOGGER.debug("La variable connection es: " + connection);
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO ODONTOLOGOS (MATRICULA, NOMBRE, APELLIDO) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, odontologo.getNumeroMatricula());
+            ps.setString(2, odontologo.getNombre());
+            ps.setString(3, odontologo.getApellido());
+            ps.execute();
+            ResultSet rs = ps.getGeneratedKeys();
+            while (rs.next()) {
+                odontologo.setId(rs.getInt(1));
+            }
 
-            String insert = "INSERT INTO ODONTOLOGO (NROMATRICULA,NOMBRE, APELLIDO) VALUES (?,?,?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(insert);
-            preparedStatement.setInt(1, odontologo.getNumeroMatricula());
-            preparedStatement.setString(2, odontologo.getNombre());
-            preparedStatement.setString(3, odontologo.getApellido());
-            preparedStatement.executeUpdate();
-            LOGGER.info("Se insertaron con éxito los datos: " + odontologo.getNumeroMatricula()+  ", " + odontologo.getNombre() +  ", " + odontologo.getApellido() + " en la tabla ODONTOLOGO");
-        } catch (SQLException e) {
-            LOGGER.error(e);
-            throw new RuntimeException(e);
-        }
-        finally {
+            connection.commit();
+            LOGGER.info("Se ha registrado el odontologo: " + odontologo);
+
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                    System.out.println("Tuvimos un problema");
+                    e.printStackTrace();
+                } catch (SQLException exception) {
+                    LOGGER.error(exception.getMessage());
+                    exception.printStackTrace();
+                }
+            }
+        } finally {
             try {
                 connection.close();
-            } catch (SQLException e) {
-                LOGGER.error(e);
-                throw new RuntimeException(e);
+            } catch (Exception e) {
+                LOGGER.error("Ha ocurrido un error al intentar cerrar la bdd. " + e.getMessage());
+                e.printStackTrace();
             }
         }
+
         return odontologo;
     }
 
     @Override
     public List<Odontologo> listar() {
-        List<Odontologo> listaOdontologos = new ArrayList<>();
-
-        getDriver();
-
-        Connection connection = null;
-
-        try {
-            connection = DriverManager.getConnection(DB_URL);
-
-            String query = "SELECT * FROM ODONTOLOGO";
-            Statement stmt= connection.createStatement();
-
-            ResultSet rs = stmt.executeQuery(query);
-
-            while (rs.next()) {
-                int nroMatricula = rs.getInt(1);
-                String nombre = rs.getString(2);
-                String apellido = rs.getString(3);
-                Odontologo odontologo = new Odontologo(nroMatricula,nombre, apellido);
-                listaOdontologos.add(odontologo);
-            }
-
-
-
-        } catch (SQLException e) {
-            LOGGER.error(e);
-            throw new RuntimeException(e);
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                LOGGER.error(e);
-                throw new RuntimeException(e);
-            }
-        }
-
-        for (Odontologo odontologo : listaOdontologos) {
-
-            LOGGER.info("Lista de odontologos: " + odontologo.getNumeroMatricula()+  ", " + odontologo.getNombre() +  ", " + odontologo.getApellido() );
-
-        }
-        return listaOdontologos;
+        return null;
     }
 
+    @Override
+    public void eliminar(int id) {
+
+    }
+
+    @Override
+    public Odontologo buscarPorId(int id) {
+        return null;
+    }
+
+    @Override
+    public Odontologo buscarPorCriterio(String criterio) {
+        return null;
+    }
+
+    private Odontologo crearObjetoOdontologo(ResultSet resultSet) throws SQLException {
+        int id = resultSet.getInt("id");
+        String nombre = resultSet.getString("nombre");
+        String apellido = resultSet.getString("apellido");
+        int numeroMatricula = resultSet.getInt("numeroMatricula");
+
+        return new Odontologo(id, numeroMatricula, nombre, apellido);
+    }
 
 }

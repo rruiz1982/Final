@@ -1,6 +1,7 @@
 package com.backen.integradorFinal.impl;
 
 
+import com.backen.integradorFinal.dao.Dao;
 import com.backen.integradorFinal.model.Odontologo;
 
 
