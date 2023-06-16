@@ -1,4 +1,4 @@
-package com.backen.integradorFinal.dao;
+package com.backen.integradorFinal.repository.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

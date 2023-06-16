@@ -1,4 +1,4 @@
-package com.backen.integradorFinal.model;
+package com.backen.integradorFinal.entity;
 
 import java.time.LocalDate;
 
@@ -28,6 +28,9 @@ public class Paciente {
         this.dni = dni;
         this.fechaIngreso = fechaIngreso;
         this.domicilio = domicilio;
+    }
+
+    public Paciente() {
     }
 
     public int getId() {
@@ -82,4 +85,6 @@ public class Paciente {
     public String toString() {
         return "Id: " + id + " - Nombre: " + nombre + " - Apellido: " + apellido + " - DNI: " + dni + " - Fechas de ingreso: " + fechaIngreso + " - Domicilio: " + domicilio;
     }
+
+
 }

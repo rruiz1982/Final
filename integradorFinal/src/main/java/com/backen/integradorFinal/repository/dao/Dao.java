@@ -1,4 +1,4 @@
-package com.backen.integradorFinal.dao;
+package com.backen.integradorFinal.repository.dao;
 
 
 import java.util.List;
@@ -13,6 +13,8 @@ public interface Dao<P> {
     P buscarPorId(int id);
 
     P buscarPorCriterio(String criterio);
+
+    P actualizar(P p);
 }
 
 

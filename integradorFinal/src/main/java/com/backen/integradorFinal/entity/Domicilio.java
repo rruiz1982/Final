@@ -1,4 +1,4 @@
-package com.backen.integradorFinal.model;
+package com.backen.integradorFinal.entity;
 
 public class Domicilio {
     private int id;

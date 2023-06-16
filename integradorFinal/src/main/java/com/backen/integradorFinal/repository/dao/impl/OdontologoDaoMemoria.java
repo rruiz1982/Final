@@ -1,8 +1,8 @@
-package com.backen.integradorFinal.impl;
+package com.backen.integradorFinal.repository.dao.impl;
 
 
-import com.backen.integradorFinal.dao.Dao;
-import com.backen.integradorFinal.model.Odontologo;
+import com.backen.integradorFinal.repository.dao.Dao;
+import com.backen.integradorFinal.entity.Odontologo;
 
 
 import java.util.List;
@@ -43,6 +43,11 @@ public class OdontologoDaoMemoria implements Dao<Odontologo> {
 
     @Override
     public Odontologo buscarPorCriterio(String criterio) {
+        return null;
+    }
+
+    @Override
+    public Odontologo actualizar(Odontologo odontologo) {
         return null;
     }
 }
