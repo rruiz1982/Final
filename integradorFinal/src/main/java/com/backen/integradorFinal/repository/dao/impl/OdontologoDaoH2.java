@@ -127,7 +127,7 @@ public class OdontologoDaoH2 implements Dao<Odontologo> {
         int id = resultSet.getInt("id");
         String nombre = resultSet.getString("nombre");
         String apellido = resultSet.getString("apellido");
-        String numeroMatricula = resultSet.getInt("numeroMatricula");
+        String numeroMatricula = resultSet.getString("numeroMatricula");
 
         return new Odontologo(id, numeroMatricula, nombre, apellido);
     }
